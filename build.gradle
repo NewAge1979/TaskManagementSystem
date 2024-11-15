@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'org.flywaydb:flyway-core'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.security:spring-security-test'
     compileOnly 'org.projectlombok:lombok'
     compileOnly 'org.mapstruct:mapstruct:1.6.3'
