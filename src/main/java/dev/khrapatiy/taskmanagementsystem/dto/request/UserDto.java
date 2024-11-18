@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Schema(description = "Данные пользователя.", requiredProperties = {"email", "password"})
 @Data
-public class UserDTO {
+public class UserDto {
     @Schema(description = "E-mail пользователя.", example = "user@email.com", accessMode = Schema.AccessMode.AUTO)
     @NotNull(message = "Необходимо указать e-mail.")
     @NotEmpty(message = "Необходимо указать e-mail.")

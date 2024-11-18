@@ -1,0 +1,72 @@
+package dev.khrapatiy.taskmanagementsystem.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class WebSecurityConfig {
+    private final static String[] WHITELIST = {
+            "/api/1.0/auth/signUp",
+            "/api/1.0/auth/signIn",
+            "/swagger-ui/**",
+            "/swagger-resource/*",
+            "/v3/api-docs/**"
+    };
+
+    private final UserDetailsService userDetailsService;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(
+                        cors -> cors.configurationSource(
+                                request -> {
+                                    var corsConfiguration = new CorsConfiguration();
+                                    corsConfiguration.setAllowCredentials(true);
+                                    corsConfiguration.addAllowedOrigin("*");
+                                    corsConfiguration.addAllowedHeader("*");
+                                    corsConfiguration.addAllowedMethod("*");
+                                    return corsConfiguration;
+                                }
+                        )
+                )
+                .authorizeHttpRequests(
+                        request -> request
+                                .requestMatchers(WHITELIST).permitAll()
+                                .anyRequest().authenticated()
+                )
+                .build();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
+}
