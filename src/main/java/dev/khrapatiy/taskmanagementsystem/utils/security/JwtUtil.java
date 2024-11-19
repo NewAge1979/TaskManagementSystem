@@ -2,8 +2,10 @@ package dev.khrapatiy.taskmanagementsystem.utils.security;
 
 import dev.khrapatiy.taskmanagementsystem.config.JwtConfig;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
+import dev.khrapatiy.taskmanagementsystem.entity.User;
 import dev.khrapatiy.taskmanagementsystem.enums.TokenType;
-import io.jsonwebtoken.Jwts;
+import dev.khrapatiy.taskmanagementsystem.exception.TokenException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +18,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class JwtUtil {
     private final JwtConfig jwtConfig;
-    private static final String BEARER_PREFIX = "Bearer ";
     private final Map<String, TokensResponse> tokens = new ConcurrentHashMap<>();
 
     public TokensResponse createTokens(UserDetails userDetails) {
@@ -43,17 +45,31 @@ public class JwtUtil {
         tokens.remove(userDetails.getUsername());
     }
 
-    public boolean validateToken(TokenType tokenType, String token, UserDetails userDetails) {
-        return true;
-    }
-
-    public String getEmailFromToken(TokenType tokenType, String token) {
-        return "";
+    public String getEmailFromToken(TokenType tokenType, String token) throws TokenException {
+        String secret = tokenType.equals(TokenType.ACCESS_TOKEN) ? jwtConfig.getAccessTokenSecret() : jwtConfig.getRefreshTokenSecret();
+        try {
+            String email = getClaim(token, secret, Claims::getSubject);
+            if (!tokens.containsKey(email)) {
+                throw new TokenException("Недопустимый JWT токен.");
+            }
+            return getClaim(token, secret, Claims::getSubject);
+        } catch (ExpiredJwtException e) {
+            throw new TokenException("Просроченный или недействительный JWT токен.");
+        } catch (UnsupportedJwtException e) {
+            throw new TokenException("Неподдерживаемый JWT токен.");
+        } catch (MalformedJwtException e) {
+            throw new TokenException("Искаженный JWT токен.");
+        } catch (Exception e) {
+            throw new TokenException("Недопустимый JWT токен.");
+        }
     }
 
     private String createToken(UserDetails userDetails, String secret, Long lifeTime) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("sub", userDetails.getUsername());
+        if (userDetails instanceof User customUser) {
+            claims.put("id", customUser.getId());
+            claims.put("sub", customUser.getEmail());
+        }
         return Jwts.builder().claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -64,5 +80,17 @@ public class JwtUtil {
 
     private SecretKey getSecretKey(String secret) {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    }
+
+    private Claims getClaimsFromToken(String token, String secret) {
+        return Jwts.parser()
+                .verifyWith(getSecretKey(secret))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private <T> T getClaim(String token, String secret, Function<Claims, T> claimsResolver) {
+        return claimsResolver.apply(getClaimsFromToken(token, secret));
     }
 }

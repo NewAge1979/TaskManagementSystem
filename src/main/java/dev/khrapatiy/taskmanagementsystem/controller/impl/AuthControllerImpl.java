@@ -3,12 +3,15 @@ package dev.khrapatiy.taskmanagementsystem.controller.impl;
 import dev.khrapatiy.taskmanagementsystem.controller.AuthController;
 import dev.khrapatiy.taskmanagementsystem.dto.request.UserDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
+import dev.khrapatiy.taskmanagementsystem.entity.User;
 import dev.khrapatiy.taskmanagementsystem.service.AuthService;
+import dev.khrapatiy.taskmanagementsystem.utils.security.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
+    private final JwtUtil jwtUtil;
 
     @Override
     @PostMapping("/signUp")
@@ -39,6 +43,11 @@ public class AuthControllerImpl implements AuthController {
     @Override
     @PostMapping("/signOut")
     public ResponseEntity<Void> signOut() {
-        return null;
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User user) {
+            log.info("Sign out user: {}", user.getEmail());
+            jwtUtil.removeTokens(user);
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

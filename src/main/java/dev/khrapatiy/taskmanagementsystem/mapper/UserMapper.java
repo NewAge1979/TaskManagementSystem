@@ -11,7 +11,7 @@ import org.mapstruct.*;
         uses = {UserMapperUtil.class})
 public interface UserMapper {
     @Mapping(target = "passwordHash", qualifiedByName = {"UserMapperUtil", "getPasswordHash"}, source = "password")
-    @Mapping(target = "role", constant = "USER")
+    @Mapping(target = "role", constant = "ROLE_USER")
     User toEntity(UserDto userDTO);
 
     UserDto toDto(User user);
