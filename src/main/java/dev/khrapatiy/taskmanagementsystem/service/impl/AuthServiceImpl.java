@@ -3,7 +3,9 @@ package dev.khrapatiy.taskmanagementsystem.service.impl;
 import dev.khrapatiy.taskmanagementsystem.dto.request.UserDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
 import dev.khrapatiy.taskmanagementsystem.entity.User;
-import dev.khrapatiy.taskmanagementsystem.exception.UserException;
+import dev.khrapatiy.taskmanagementsystem.enums.Role;
+import dev.khrapatiy.taskmanagementsystem.exception.UserExistsException;
+import dev.khrapatiy.taskmanagementsystem.exception.UserNotFoundException;
 import dev.khrapatiy.taskmanagementsystem.mapper.UserMapper;
 import dev.khrapatiy.taskmanagementsystem.repository.UserRepository;
 import dev.khrapatiy.taskmanagementsystem.service.AuthService;
@@ -32,17 +34,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void signUp(UserDto userDto) {
-        if(!userExists(userDto.getEmail())) {
+        if (!userExists(userDto.getEmail())) {
             User user = userMapper.toEntity(userDto);
             userRepository.save(user);
         } else {
-            throw new UserException("Пользователь " + userDto.getEmail() + " уже существует.");
+            throw new UserExistsException("Пользователь " + userDto.getEmail() + " уже существует.");
         }
     }
 
     @Override
     public TokensResponse signIn(UserDto userDto) {
-        if(userExists(userDto.getEmail())) {
+        if (userExists(userDto.getEmail())) {
             try {
                 UserDetails user = userService.loadUserByUsername(userDto.getEmail());
                 authenticationManager.authenticate(
@@ -53,10 +55,21 @@ public class AuthServiceImpl implements AuthService {
                 log.info("Refresh token: {}", tokensResponse.refreshToken());
                 return tokensResponse;
             } catch (BadCredentialsException | UsernameNotFoundException e) {
-                throw new UserException("Пользователь " + userDto.getEmail() + " не найден.");
+                throw new UserNotFoundException("Пользователь " + userDto.getEmail() + " не найден.");
             }
         } else {
-            throw new UserException("Пользователь " + userDto.getEmail() + " не найден.");
+            throw new UserNotFoundException("Пользователь " + userDto.getEmail() + " не найден.");
+        }
+    }
+
+    @Override
+    public void addAdmin(UserDto userDto) {
+        if (!userExists(userDto.getEmail())) {
+            User user = userMapper.toEntity(userDto);
+            user.setRole(Role.ROLE_ADMIN);
+            userRepository.save(user);
+        } else {
+            throw new UserExistsException("Пользователь " + userDto.getEmail() + " уже существует.");
         }
     }
 

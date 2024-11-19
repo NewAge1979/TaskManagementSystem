@@ -3,9 +3,10 @@ package dev.khrapatiy.taskmanagementsystem.controller.advice;
 import dev.khrapatiy.taskmanagementsystem.dto.Violation;
 import dev.khrapatiy.taskmanagementsystem.dto.response.ErrorResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.ValidateErrorResponse;
-import dev.khrapatiy.taskmanagementsystem.exception.TaskException;
+import dev.khrapatiy.taskmanagementsystem.exception.TaskNotFoundException;
 import dev.khrapatiy.taskmanagementsystem.exception.TokenException;
-import dev.khrapatiy.taskmanagementsystem.exception.UserException;
+import dev.khrapatiy.taskmanagementsystem.exception.UserExistsException;
+import dev.khrapatiy.taskmanagementsystem.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,9 +31,14 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorResponse> userException(UserException e) {
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<ErrorResponse> userExistsException(UserExistsException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> userNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(TokenException.class)
@@ -40,9 +46,9 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.status(401).body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(TaskException.class)
-    public ResponseEntity<ErrorResponse> taskException(TaskException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> taskException(TaskNotFoundException e) {
+        return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

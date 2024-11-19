@@ -26,6 +26,7 @@ public class WebSecurityConfig {
     private final static String[] WHITELIST = {
             "/api/1.0/auth/signUp",
             "/api/1.0/auth/signIn",
+            "/api/1.0/auth/addAdmin",
             "/swagger-ui/**",
             "/swagger-resource/*",
             "/v3/api-docs/**"

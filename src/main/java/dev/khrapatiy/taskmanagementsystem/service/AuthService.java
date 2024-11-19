@@ -4,7 +4,9 @@ import dev.khrapatiy.taskmanagementsystem.dto.request.UserDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
 
 public interface AuthService {
-    void signUp(UserDto userDTO);
+    void signUp(UserDto userDto);
 
-    TokensResponse signIn(UserDto userDTO);
+    TokensResponse signIn(UserDto userDto);
+
+    void addAdmin(UserDto userDto);
 }

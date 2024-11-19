@@ -30,7 +30,7 @@ public class TaskControllerImpl implements TaskController {
 
     @Override
     @GetMapping("/showTask/{taskId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@TaskExecutorService.isExecutorForTask(#taskId) && hasRole('USER') || hasRole('ADMIN')")
     public ResponseEntity<TaskResponse> showTask(@PathVariable(name = "taskId") Long taskId) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.showTask(taskId));
     }

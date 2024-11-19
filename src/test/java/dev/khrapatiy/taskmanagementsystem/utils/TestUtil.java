@@ -9,7 +9,7 @@ public class TestUtil {
         User user = new User();
         user.setEmail("test@test.com");
         user.setPasswordHash("drowssap");
-        user.setRole(Role.USER);
+        user.setRole(Role.ROLE_USER);
         return user;
     }
 

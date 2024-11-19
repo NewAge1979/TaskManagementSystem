@@ -45,7 +45,7 @@ class UserMapperTest {
     void toEntity_DefaulRoleIsAssigned() {
         UserDto userDTO = TestUtil.getValidUserDTO();
         User user = userMapper.toEntity(userDTO);
-        assertEquals(Role.USER, user.getRole());
+        assertEquals(Role.ROLE_USER, user.getRole());
     }
 
     @Test

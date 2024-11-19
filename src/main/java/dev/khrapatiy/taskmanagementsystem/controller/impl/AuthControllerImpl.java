@@ -5,6 +5,7 @@ import dev.khrapatiy.taskmanagementsystem.dto.request.UserDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
 import dev.khrapatiy.taskmanagementsystem.entity.User;
 import dev.khrapatiy.taskmanagementsystem.service.AuthService;
+import dev.khrapatiy.taskmanagementsystem.service.UserService;
 import dev.khrapatiy.taskmanagementsystem.utils.security.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
     private final JwtUtil jwtUtil;
+    private final UserService userService;
 
     @Override
     @PostMapping("/signUp")
@@ -49,5 +51,15 @@ public class AuthControllerImpl implements AuthController {
             SecurityContextHolder.getContext().setAuthentication(null);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
+    @PostMapping("/addAdmin")
+    public ResponseEntity<Void> addAdmin() {
+        UserDto userDto = new UserDto();
+        userDto.setEmail("admin@email.com");
+        userDto.setPassword("p@$$w0rd");
+        authService.addAdmin(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

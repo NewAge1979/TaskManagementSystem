@@ -62,7 +62,7 @@ public class AuthControllerTest {
         UserDto userDTO = getValidUserDTO();
         restTemplate.postForEntity(API_1_0_AUTH_SIGN_UP, userDTO, Object.class);
         Optional<User> user = userRepository.findByEmail(userDTO.getEmail());
-        user.ifPresent(value -> assertThat(value.getRole()).isEqualTo(Role.USER));
+        user.ifPresent(value -> assertThat(value.getRole()).isEqualTo(Role.ROLE_USER));
     }
 
     @Test
@@ -107,10 +107,10 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void postSignIn_whenUserNotExists_receive400() {
+    public void postSignIn_whenUserNotExists_receive404() {
         UserDto userDTO = getValidUserDTO();
         ResponseEntity<Object> response = restTemplate.postForEntity(API_1_0_AUTH_SIGN_IN, userDTO, Object.class);
-        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertThat(response.getStatusCode().value()).isEqualTo(404);
     }
 
     @Test

@@ -1,8 +1,10 @@
 package dev.khrapatiy.taskmanagementsystem.controller;
 
 import dev.khrapatiy.taskmanagementsystem.dto.request.UserDto;
+import dev.khrapatiy.taskmanagementsystem.dto.response.ErrorResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.ValidateErrorResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,6 +49,14 @@ public interface AuthController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ValidateErrorResponse.class)
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Пользователь не найден",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
             )
     })
     ResponseEntity<TokensResponse> signIn(@Valid @RequestBody UserDto userDTO);
@@ -64,4 +74,7 @@ public interface AuthController {
     })
     @SecurityRequirement(name = "JWT")
     ResponseEntity<Void> signOut();
+
+    @Hidden
+    ResponseEntity<Void> addAdmin();
 }

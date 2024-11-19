@@ -2,6 +2,7 @@ package dev.khrapatiy.taskmanagementsystem.controller;
 
 import dev.khrapatiy.taskmanagementsystem.dto.request.CreateTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.request.EditTaskDto;
+import dev.khrapatiy.taskmanagementsystem.dto.response.ErrorResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TaskResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.ValidateErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,11 +41,11 @@ public interface TaskController {
     @SecurityRequirement(name = "JWT")
     ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskDto taskDto);
 
-    @Operation(method = "GET", summary = "Показ задачи.")
+    @Operation(method = "GET", summary = "Просмотр задачи.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Задача успешно показана.",
+                    description = "Задача успешно просмотрена.",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = TaskResponse.class)
@@ -52,10 +53,18 @@ public interface TaskController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Ошибка показа задачи.",
+                    description = "Ошибка при просмотри задачи.",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ValidateErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Задача не найдена",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
                     )
             )
     })
@@ -79,6 +88,14 @@ public interface TaskController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ValidateErrorResponse.class)
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Задача не найдена",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
             )
     })
     @SecurityRequirement(name = "JWT")
@@ -100,6 +117,14 @@ public interface TaskController {
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ValidateErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Задача не найдена",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
                     )
             )
     })
