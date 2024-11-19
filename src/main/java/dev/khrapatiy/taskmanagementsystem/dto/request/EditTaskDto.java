@@ -23,21 +23,9 @@ public class EditTaskDto {
     @Schema(description = "Приоритет задачи.", example = "LOW", accessMode = Schema.AccessMode.AUTO)
     Priority priority;
 
-    @Schema(description = "Создатель задачи.", accessMode = Schema.AccessMode.AUTO)
-    UserIdCreateDto creator;
+    @Schema(description = "Id создателя задачи.", example = "1", accessMode = Schema.AccessMode.AUTO)
+    Long creatorId;
 
-    @Schema(description = "Исполнитель по задачи.", accessMode = Schema.AccessMode.AUTO)
-    UserIdExecutorDto executor;
-
-    public record UserIdCreateDto(
-            @Schema(description = "Id создателя задачи.", example = "1", accessMode = Schema.AccessMode.AUTO)
-            Long id
-    ) {
-    }
-
-    public record UserIdExecutorDto(
-            @Schema(description = "Id исполнителя по задачи", example = "2", accessMode = Schema.AccessMode.AUTO)
-            Long id
-    ) {
-    }
+    @Schema(description = "Id исполнителя по задачи", example = "2", accessMode = Schema.AccessMode.AUTO)
+    Long executorId;
 }

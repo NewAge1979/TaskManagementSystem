@@ -1,6 +1,8 @@
 package dev.khrapatiy.taskmanagementsystem.controller.impl;
 
 import dev.khrapatiy.taskmanagementsystem.controller.TaskController;
+import dev.khrapatiy.taskmanagementsystem.dto.request.ChangePriorityRequest;
+import dev.khrapatiy.taskmanagementsystem.dto.request.ChangeStatusRequest;
 import dev.khrapatiy.taskmanagementsystem.dto.request.CreateTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.request.EditTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TaskResponse;
@@ -31,14 +33,14 @@ public class TaskControllerImpl implements TaskController {
     @Override
     @GetMapping("/showTask/{taskId}")
     @PreAuthorize("@TaskExecutorService.isExecutorForTask(#taskId) && hasRole('USER') || hasRole('ADMIN')")
-    public ResponseEntity<TaskResponse> showTask(@PathVariable(name = "taskId") Long taskId) {
+    public ResponseEntity<TaskResponse> showTask(@PathVariable Long taskId) {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.showTask(taskId));
     }
 
     @Override
     @PatchMapping("/updateTask/{taskId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable(name = "taskId") Long taskId, @Valid @RequestBody EditTaskDto taskDto) {
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long taskId, @Valid @RequestBody EditTaskDto taskDto) {
         log.info("Updating a task");
         return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(taskId, taskDto));
     }
@@ -46,9 +48,33 @@ public class TaskControllerImpl implements TaskController {
     @Override
     @DeleteMapping("/deleteTask/{taskId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteTask(@PathVariable(name = "taskId") Long taskId) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
         log.info("Deleting a task");
         taskService.deleteTask(taskId);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @PatchMapping("/changeStatus/{taskId}")
+    @PreAuthorize("@TaskExecutorService.isExecutorForTask(#taskId) && hasRole('USER') || hasRole('ADMIN')")
+    public ResponseEntity<TaskResponse> changeStatus(@PathVariable Long taskId, @Valid @RequestBody ChangeStatusRequest request) {
+        log.info("Changing status of a task");
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.changeStatus(taskId, request));
+    }
+
+    @Override
+    @PatchMapping("/changePriority/{taskId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<TaskResponse> changePriority(@PathVariable Long taskId, @Valid @RequestBody ChangePriorityRequest request) {
+        log.info("Changing priority of a task");
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.changePriority(taskId, request));
+    }
+
+    @Override
+    @PatchMapping("/setExecutor")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<TaskResponse> setExecutor(@RequestParam Long taskId, @RequestParam Long executorId) {
+        log.info("Setting executor of a task");
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.setExecutor(taskId, executorId));
     }
 }

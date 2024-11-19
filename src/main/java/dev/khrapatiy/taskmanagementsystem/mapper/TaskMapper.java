@@ -10,8 +10,7 @@ import org.mapstruct.*;
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = {TaskMapperUtil.class},
-        imports = {TaskMapperUtil.class}
+        uses = {TaskMapperUtil.class}
 )
 public interface TaskMapper {
     @Mapping(target = "status", constant = "NEW")
@@ -23,5 +22,7 @@ public interface TaskMapper {
     TaskResponse toDto(Task task);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Task partialUpdate(EditTaskDto editTaskDto, @MappingTarget Task task);
+    @Mapping(target = "creator", qualifiedByName = "getUserById", source = "editTaskDto.creatorId")
+    @Mapping(target = "executor", qualifiedByName = "getUserById", source = "editTaskDto.executorId")
+    Task partialUpdate(@MappingTarget Task task, EditTaskDto editTaskDto);
 }
