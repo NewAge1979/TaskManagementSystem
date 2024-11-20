@@ -10,7 +10,8 @@ import org.mapstruct.*;
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = {TaskMapperUtil.class}
+        uses = {TaskMapperUtil.class},
+        imports = {TaskMapperUtil.class}
 )
 public interface TaskMapper {
     @Mapping(target = "status", constant = "NEW")

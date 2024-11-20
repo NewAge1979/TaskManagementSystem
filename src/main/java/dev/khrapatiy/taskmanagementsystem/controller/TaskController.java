@@ -1,13 +1,12 @@
 package dev.khrapatiy.taskmanagementsystem.controller;
 
-import dev.khrapatiy.taskmanagementsystem.dto.request.ChangePriorityRequest;
-import dev.khrapatiy.taskmanagementsystem.dto.request.ChangeStatusRequest;
 import dev.khrapatiy.taskmanagementsystem.dto.request.CreateTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.request.EditTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.ErrorResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TaskResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.ValidateErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -162,7 +161,14 @@ public interface TaskController {
             )
     })
     @SecurityRequirement(name = "JWT")
-    ResponseEntity<TaskResponse> changeStatus(@PathVariable Long taskId, @Valid @RequestBody ChangeStatusRequest request);
+    ResponseEntity<TaskResponse> changeStatus(
+            @RequestParam("taskId")
+            @Parameter(description = "Ссылка на задачу.", example = "1", required = true)
+            Long taskId,
+            @RequestParam("status")
+            @Parameter(description = "Статус.", example = "NEW", required = true)
+            String status
+    );
 
     @Operation(method = "PATCH", summary = "Изменение приоритета задачи.")
     @ApiResponses(value = {
@@ -192,7 +198,14 @@ public interface TaskController {
             )
     })
     @SecurityRequirement(name = "JWT")
-    ResponseEntity<TaskResponse> changePriority(@PathVariable Long taskId, @Valid @RequestBody ChangePriorityRequest request);
+    ResponseEntity<TaskResponse> changePriority(
+            @RequestParam("taskId")
+            @Parameter(description = "Ссылка на задачу.", example = "1", required = true)
+            Long taskId,
+            @RequestParam("priority")
+            @Parameter(description = "Приоритет.", example = "LOW", required = true)
+            String priority
+    );
 
     @Operation(method = "PATCH", summary = "Изменение исполнителя по задачи.")
     @ApiResponses(value = {
@@ -222,5 +235,12 @@ public interface TaskController {
             )
     })
     @SecurityRequirement(name = "JWT")
-    ResponseEntity<TaskResponse> setExecutor(@RequestParam Long taskId, @RequestParam Long executor);
+    ResponseEntity<TaskResponse> setExecutor(
+            @RequestParam("taskId")
+            @Parameter(description = "Ссылка на задачу.", example = "1", required = true)
+            Long taskId,
+            @RequestParam("executor")
+            @Parameter(description = "Ссылка на исполнителя.", example = "1", required = true)
+            Long executor
+    );
 }

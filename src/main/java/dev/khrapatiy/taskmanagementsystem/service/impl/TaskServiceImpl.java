@@ -1,7 +1,5 @@
 package dev.khrapatiy.taskmanagementsystem.service.impl;
 
-import dev.khrapatiy.taskmanagementsystem.dto.request.ChangePriorityRequest;
-import dev.khrapatiy.taskmanagementsystem.dto.request.ChangeStatusRequest;
 import dev.khrapatiy.taskmanagementsystem.dto.request.CreateTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.request.EditTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TaskResponse;
@@ -54,16 +52,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse changeStatus(Long taskId, ChangeStatusRequest request) {
+    public TaskResponse changeStatus(Long taskId, String status) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException("Задача " + taskId + " не найдена."));
-        task.setStatus(Status.valueOf(request.status()));
+        task.setStatus(Status.valueOf(status));
         return taskMapper.toDto(taskRepository.save(task));
     }
 
     @Override
-    public TaskResponse changePriority(Long taskId, ChangePriorityRequest request) {
+    public TaskResponse changePriority(Long taskId, String priority) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException("Задача " + taskId + " не найдена."));
-        task.setPriority(Priority.valueOf(request.priority()));
+        task.setPriority(Priority.valueOf(priority));
         return taskMapper.toDto(taskRepository.save(task));
     }
 

@@ -1,7 +1,5 @@
 package dev.khrapatiy.taskmanagementsystem.service;
 
-import dev.khrapatiy.taskmanagementsystem.dto.request.ChangePriorityRequest;
-import dev.khrapatiy.taskmanagementsystem.dto.request.ChangeStatusRequest;
 import dev.khrapatiy.taskmanagementsystem.dto.request.CreateTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.request.EditTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TaskResponse;
@@ -15,9 +13,9 @@ public interface TaskService {
 
     void deleteTask(Long id);
 
-    TaskResponse changeStatus(Long taskId, ChangeStatusRequest request);
+    TaskResponse changeStatus(Long taskId, String status);
 
-    TaskResponse changePriority(Long taskId, ChangePriorityRequest request);
+    TaskResponse changePriority(Long taskId, String priority);
 
     TaskResponse setExecutor(Long taskId, Long executorId);
 }
