@@ -3,19 +3,19 @@ spring:
     name: TaskManagementSystem
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: R0t4@dm1n
-    username: TaskManagementSystemAdmin
-    url: jdbc:postgresql://localhost/TaskManagementSystemDB
+    password: ${TMS_DB_PASSWORD:R0t4@dm1n}
+    username: ${TMS_DB_USERNAME:TaskManagementSystemAdmin}
+    url: ${TMS_DB_URL:jdbc:postgresql://localhost/TaskManagementSystemDB}
   jpa:
     show-sql: false
   flyway:
     baseline-on-migrate: true
     baseline-version: 0
 jwt:
-  access-token-secret: 202401019a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9
-  access-token-lifetime: 900000
-  refresh-token-secret: 202412319a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9
-  refresh-token-lifetime: 86400000 # сутки
+  access-token-secret: ${TMS_ACCESS_SECRET:202401019a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9}
+  access-token-lifetime: ${TMS_ACCESS_LIFETIME:86400000}
+  refresh-token-secret: ${TMS_REFRESH_SECRET:202412319a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9}
+  refresh-token-lifetime: ${TMS_REFRESH_LIFETIME:86400000} # сутки
 logging:
   level:
     root: error
@@ -24,3 +24,5 @@ logging:
     dev:
       khrapatiy:
         taskmanagementsystem: debug
+server:
+  port: 8080

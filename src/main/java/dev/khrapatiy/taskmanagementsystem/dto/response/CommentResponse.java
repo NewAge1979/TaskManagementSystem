@@ -16,12 +16,12 @@ public class CommentResponse {
     String text;
 
     @Schema(description = "Автор комментария.", accessMode = Schema.AccessMode.AUTO)
-    UserDto creator;
+    UserCommentDto creator;
 
     @Schema(description = "Дата добавления.", accessMode = Schema.AccessMode.AUTO)
     OffsetDateTime createAt;
 
-    public record UserDto(
+    public record UserCommentDto(
             @Schema(description = "Автор комментария.", example = "admin@email.com", accessMode = Schema.AccessMode.AUTO)
             String email
     ) {

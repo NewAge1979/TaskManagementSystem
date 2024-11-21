@@ -2,9 +2,10 @@ package dev.khrapatiy.taskmanagementsystem.controller;
 
 import dev.khrapatiy.taskmanagementsystem.dto.request.CreateTaskDto;
 import dev.khrapatiy.taskmanagementsystem.dto.request.EditTaskDto;
-import dev.khrapatiy.taskmanagementsystem.dto.response.ErrorResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TaskResponse;
-import dev.khrapatiy.taskmanagementsystem.dto.response.ValidateErrorResponse;
+import dev.khrapatiy.taskmanagementsystem.enums.Priority;
+import dev.khrapatiy.taskmanagementsystem.enums.Status;
+import dev.khrapatiy.taskmanagementsystem.utils.validate.ValueOfEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,15 @@ public interface TaskController {
                     description = "Ошибка создания задачи.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
@@ -54,11 +65,11 @@ public interface TaskController {
                     )
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Ошибка при просмотри задачи.",
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
@@ -66,12 +77,16 @@ public interface TaskController {
                     description = "Задача не найдена",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
     @SecurityRequirement(name = "JWT")
-    ResponseEntity<TaskResponse> showTask(@PathVariable Long taskId);
+    ResponseEntity<TaskResponse> showTask(
+            @Parameter(description = "Id задачи.", example = "1")
+            @PathVariable
+            Long taskId
+    );
 
     @Operation(method = "Patch", summary = "Обновление задачи.")
     @ApiResponses(value = {
@@ -88,7 +103,15 @@ public interface TaskController {
                     description = "Ошибка обновления задачи.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
@@ -96,29 +119,40 @@ public interface TaskController {
                     description = "Задача не найдена",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
     @SecurityRequirement(name = "JWT")
-    ResponseEntity<TaskResponse> updateTask(@PathVariable Long taskId, @Valid @RequestBody EditTaskDto taskDto);
+    ResponseEntity<TaskResponse> updateTask(
+            @Parameter(description = "Id задачи.", example = "1")
+            @PathVariable
+            Long taskId,
+            @Valid
+            @RequestBody
+            EditTaskDto taskDto
+    );
 
     @Operation(method = "DELETE", summary = "Удаление задачи.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Задача успешно удалена.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema()
-                    )
+                    description = "Задача успешно удалена."
             ),
             @ApiResponse(
                     responseCode = "400",
                     description = "Ошибка удаления задачи.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
@@ -126,12 +160,16 @@ public interface TaskController {
                     description = "Задача не найдена",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
     @SecurityRequirement(name = "JWT")
-    ResponseEntity<Void> deleteTask(@PathVariable Long taskId);
+    ResponseEntity<Void> deleteTask(
+            @Parameter(description = "Id задачи.", example = "1")
+            @PathVariable
+            Long taskId
+    );
 
     @Operation(method = "PATCH", summary = "Изменение статуса задачи.")
     @ApiResponses(value = {
@@ -148,7 +186,15 @@ public interface TaskController {
                     description = "Ошибка изменения статуса.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
@@ -156,17 +202,25 @@ public interface TaskController {
                     description = "Задача не найдена",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
     @SecurityRequirement(name = "JWT")
     ResponseEntity<TaskResponse> changeStatus(
-            @RequestParam("taskId")
-            @Parameter(description = "Ссылка на задачу.", example = "1", required = true)
+            @Parameter(description = "Id задачи.", example = "1")
+            @RequestParam
+            @Valid
+            @NotNull(message = "Не указан id задачи.")
             Long taskId,
-            @RequestParam("status")
-            @Parameter(description = "Статус.", example = "NEW", required = true)
+            @Parameter(description = "Статус задачи.", example = "RUNNING")
+            @RequestParam
+            @Valid
+            @NotNull(message = "Не указано новое значение статуса.")
+            @ValueOfEnum(
+                    enumClass = Status.class,
+                    message = "Новый статус указан не верно. Укажите в качестве статуса одно этих значений: NEW, FINISHED, AWAITING, RUNNING."
+            )
             String status
     );
 
@@ -185,7 +239,15 @@ public interface TaskController {
                     description = "Ошибка изменения приоритета.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
@@ -193,17 +255,25 @@ public interface TaskController {
                     description = "Задача не найдена",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
     @SecurityRequirement(name = "JWT")
     ResponseEntity<TaskResponse> changePriority(
-            @RequestParam("taskId")
-            @Parameter(description = "Ссылка на задачу.", example = "1", required = true)
+            @Parameter(description = "Id задачи.", example = "1")
+            @RequestParam
+            @Valid
+            @NotNull(message = "Не указан id задачи.")
             Long taskId,
-            @RequestParam("priority")
-            @Parameter(description = "Приоритет.", example = "LOW", required = true)
+            @Parameter(description = "Приоритет задачи.", example = "HIGH")
+            @RequestParam
+            @Valid
+            @NotNull(message = "Не указано новое значение приоритета.")
+            @ValueOfEnum(
+                    enumClass = Priority.class,
+                    message = "Новый приоритет указан не верно. Укажите в качестве приоритета одно этих значений: LOW, NORMAL, HIGH."
+            )
             String priority
     );
 
@@ -222,7 +292,15 @@ public interface TaskController {
                     description = "Ошибка изменения исполнителя.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Доступ к ресурсу запрещен.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
@@ -230,17 +308,21 @@ public interface TaskController {
                     description = "Задача не найдена",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
     @SecurityRequirement(name = "JWT")
     ResponseEntity<TaskResponse> setExecutor(
-            @RequestParam("taskId")
-            @Parameter(description = "Ссылка на задачу.", example = "1", required = true)
+            @Parameter(description = "Id задачи.", example = "1")
+            @RequestParam
+            @Valid
+            @NotNull(message = "Не указан id задачи.")
             Long taskId,
-            @RequestParam("executor")
-            @Parameter(description = "Ссылка на исполнителя.", example = "1", required = true)
-            Long executor
+            @Parameter(description = "Id исполнителя.", example = "2")
+            @RequestParam
+            @Valid
+            @NotNull(message = "Не указан id исполнителя.")
+            Long executorId
     );
 }

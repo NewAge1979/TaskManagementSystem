@@ -18,8 +18,12 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         url = "https://khrapatiy.dev"
                 )
         ),
-        servers = @Server(url = "http://localhost:8080")
+        servers = {
+                @Server(url = "http://localhost:8080", description = "Адрес для LocalHost"),
+                @Server(url = "http://localhost:8888", description = "Адрес для Docker")
+        }
 )
+
 @SecurityScheme(
         name = "JWT",
         type = SecuritySchemeType.HTTP,

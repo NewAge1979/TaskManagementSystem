@@ -1,9 +1,7 @@
 package dev.khrapatiy.taskmanagementsystem.controller;
 
 import dev.khrapatiy.taskmanagementsystem.dto.request.UserDto;
-import dev.khrapatiy.taskmanagementsystem.dto.response.ErrorResponse;
 import dev.khrapatiy.taskmanagementsystem.dto.response.TokensResponse;
-import dev.khrapatiy.taskmanagementsystem.dto.response.ValidateErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -23,10 +22,10 @@ public interface AuthController {
             @ApiResponse(responseCode = "201", description = "Пользователь успешно зарегистрирован."),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Ошибка регистрации пользователя.",
+                    description = "Ошибка регистрации (пользователь существует или некорректные данные (логин, пароль)).",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
@@ -47,15 +46,15 @@ public interface AuthController {
                     description = "Ошибка авторизации пользователя.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidateErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Пользователь не найден",
+                    description = "Пользователь не найден.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)
+                            schema = @Schema(implementation = ProblemDetail.class)
                     )
             )
     })
@@ -69,7 +68,11 @@ public interface AuthController {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "Пользователь не авторизован."
+                    description = "Пользователь не авторизован.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ProblemDetail.class)
+                    )
             )
     })
     @SecurityRequirement(name = "JWT")

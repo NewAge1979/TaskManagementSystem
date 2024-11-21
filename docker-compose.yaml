@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:17.1-alpine
+    restart: on-failure
+    ports:
+      - "54321:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure:/docker-entrypoint-initdb.d:ro
+    environment:
+      POSTGRES_USER: TMSAdmin
+      POSTGRES_PASSWORD: R0t4@dm1n
+      POSTGRES_DB: TMSDB
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+  pgadmin:
+    image: dpage/pgadmin4:8.13.0
+    restart: on-failure
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
+      - ./docker/pgadmin/pgpass:/pgadmin4/pgpass
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:80/misc/ping || exit -1
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    depends_on:
+      - postgres
+    entrypoint: /bin/sh -c "chmod 600 /pgadmin4/pgpass; /entrypoint.sh;"
+  tms:
+    image: tms:latest
+    build:
+      context: .
+      args:
+        DOCKER_BUILDKIT: 1
+    restart: on-failure
+    ports:
+      - "8888:8080"
+    environment:
+      - TMS_DB_URL=jdbc:postgresql://postgres/TMSDB
+      - TMS_DB_USERNAME=TMSAdmin
+      - TMS_DB_PASSWORD=R0t4@dm1n
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    depends_on:
+      - postgres
+volumes:
+  postgres_data:
+  pgadmin_data:
