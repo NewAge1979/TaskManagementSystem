@@ -29,7 +29,8 @@ public class WebSecurityConfig {
             "/api/1.0/auth/addAdmin",
             "/swagger-ui/**",
             "/swagger-resource/*",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/actuator/**"
     };
 
     private final UserDetailsService userDetailsService;

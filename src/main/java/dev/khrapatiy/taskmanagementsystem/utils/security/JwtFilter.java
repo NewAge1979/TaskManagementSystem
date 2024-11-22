@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         var authHeader = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.isNotEmpty(authHeader) && StringUtils.startsWith(authHeader, BEARER_PREFIX)) {
             var token = authHeader.substring(BEARER_PREFIX.length());
-            log.info("Authorized request!");
+            //log.info("Authorized request!");
             log.info("JWT token found: {}", token);
             try {
                 String email = jwtUtil.getEmailFromToken(TokenType.ACCESS_TOKEN, token);
@@ -58,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 handlerExceptionResolver.resolveException(request, response, null, e);
             }
         } else {
-            log.info("Unauthorized request!");
+            //log.info("Unauthorized request!");
             filterChain.doFilter(request, response);
         }
     }
