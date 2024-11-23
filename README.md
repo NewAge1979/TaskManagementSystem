@@ -36,3 +36,6 @@ Java 17, Spring Boot 3, PostgreSQL 17.1, Gradle 8.10.2, Docker.
 4. После запуска Swagger будет доступен по адресу:
 
     #### [http://localhost:8888/swagger-ui/index.html](http://localhost:8888/swagger-ui/index.html)
+#### Проверка работоспособности:
+1. Для тестирования созданы пользователи: admin@email.com, user@email.com, user2@email.com, user3@email.com, user4@email.com с паролем: p@$$w0rd
+2. Так же для тестирования созданы 7 задач.
