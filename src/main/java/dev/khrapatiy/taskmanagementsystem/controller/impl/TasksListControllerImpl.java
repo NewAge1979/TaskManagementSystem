@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +20,7 @@ public class TasksListControllerImpl implements TasksListController {
 
     @Override
     @GetMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<TasksListResponse>> getTaskList(@RequestParam Integer page, @RequestParam Integer size) {
         log.info("getTaskList");
         return ResponseEntity.status(200).body(tasksListService.getTasksList(PageRequest.of(page, size)));
@@ -26,6 +28,7 @@ public class TasksListControllerImpl implements TasksListController {
 
     @Override
     @GetMapping("/creator")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<TasksListResponse>> getTaskListByCreator(@RequestParam Long userId, @RequestParam Integer page, @RequestParam Integer size) {
         log.info("getTaskListByCreator");
         return ResponseEntity.status(200).body(tasksListService.getTaskListByCreator(userId, PageRequest.of(page, size)));
@@ -33,6 +36,7 @@ public class TasksListControllerImpl implements TasksListController {
 
     @Override
     @GetMapping("/executor")
+    @PreAuthorize("@CheckUserService.checkUser(#userId) && hasRole('USER') || hasRole('ADMIN')")
     public ResponseEntity<Page<TasksListResponse>> getTaskListByExecutor(@RequestParam Long userId, @RequestParam Integer page, @RequestParam Integer size) {
         log.info("getTaskListByExecutor");
         return ResponseEntity.status(200).body(tasksListService.getTaskListByExecutor(userId, PageRequest.of(page, size)));
