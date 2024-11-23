@@ -1,11 +1,6 @@
-FROM gradle:jdk17-alpine AS builder
-WORKDIR /application
-COPY . .
-RUN --mount=type=cache,target=/root/.gradle  gradle clean build -x test
-
 FROM bellsoft/liberica-openjre-alpine:17 AS layers
 WORKDIR /application
-COPY --from=builder /application/build/libs/*.jar app.jar
+COPY /build/libs/*.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract
 
 FROM bellsoft/liberica-openjre-alpine:17

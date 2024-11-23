@@ -30,10 +30,12 @@ Java 17, Spring Boot 3, PostgreSQL 17.1, Gradle 8.10.2, Docker.
 2. Перейти в каталог "TaskManagementSystem":
 
     #### `cd TaskManagementSystem`
-3. Для запуска в Docker необходимо выполнить команду:
+3. Перед запуском проекта его надо собрать, для этого надо выполнить команду:
+    #### `./gradlew clean build -x`
+4. Для запуска в Docker необходимо выполнить команду:
 
     #### `docker compose up -d`
-4. После запуска Swagger будет доступен по адресу:
+5. После запуска Swagger будет доступен по адресу:
 
     #### [http://localhost:8888/swagger-ui/index.html](http://localhost:8888/swagger-ui/index.html)
 #### Проверка работоспособности:
