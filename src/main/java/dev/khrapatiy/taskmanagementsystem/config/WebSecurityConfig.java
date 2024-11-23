@@ -18,6 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -45,9 +47,9 @@ public class WebSecurityConfig {
                                 request -> {
                                     var corsConfiguration = new CorsConfiguration();
                                     corsConfiguration.setAllowCredentials(true);
-                                    corsConfiguration.addAllowedOrigin("*");
-                                    corsConfiguration.addAllowedHeader("*");
-                                    corsConfiguration.addAllowedMethod("*");
+                                    corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+                                    corsConfiguration.setAllowedHeaders(List.of("*"));
+                                    corsConfiguration.setAllowedMethods(List.of("*"));
                                     return corsConfiguration;
                                 }
                         )
