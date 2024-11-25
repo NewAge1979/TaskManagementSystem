@@ -31,7 +31,7 @@ Java 17, Spring Boot 3, PostgreSQL 17.1, Gradle 8.10.2, Docker.
 
     #### `cd TaskManagementSystem`
 3. Перед запуском проекта его надо собрать, для этого надо выполнить команду:
-    #### `./gradlew clean build -x`
+    #### `./gradlew clean build -x test`
 4. Для запуска в Docker необходимо выполнить команду:
 
     #### `docker compose up -d`
