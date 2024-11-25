@@ -41,3 +41,6 @@ Java 17, Spring Boot 3, PostgreSQL 17.1, Gradle 8.10.2, Docker.
 #### Проверка работоспособности:
 1. Для тестирования созданы пользователи: admin@email.com, user@email.com, user2@email.com, user3@email.com, user4@email.com с паролем: p@$$w0rd
 2. Так же для тестирования созданы 7 задач.
+
+#### Примечание:
+Так же спецификация API доступна по адресу: [https://khrapatiy.dev/tms-api/index.html](https://khrapatiy.dev/tms-api/index.html)
