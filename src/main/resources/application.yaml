@@ -26,3 +26,9 @@ logging:
         taskmanagementsystem: debug
 server:
   port: 8080
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /tmsapi
+  api-docs:
+    path: /tmsdocs

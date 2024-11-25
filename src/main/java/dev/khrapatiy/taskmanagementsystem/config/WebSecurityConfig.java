@@ -32,7 +32,10 @@ public class WebSecurityConfig {
             "/swagger-ui/**",
             "/swagger-resource/*",
             "/v3/api-docs/**",
-            "/actuator/**"
+            "/actuator/**",
+            "/tmsapi/**",
+            "/tmsdocs/**",
+            "/tmsdocs.yaml"
     };
 
     private final UserDetailsService userDetailsService;

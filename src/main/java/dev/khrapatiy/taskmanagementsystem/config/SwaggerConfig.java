@@ -20,7 +20,8 @@ import io.swagger.v3.oas.annotations.servers.Server;
         ),
         servers = {
                 @Server(url = "http://localhost:8080", description = "Адрес для LocalHost"),
-                @Server(url = "http://localhost:8888", description = "Адрес для Docker")
+                @Server(url = "http://localhost:8888", description = "Адрес для Docker"),
+                @Server(url = "https://khrapatiy.dev/tms", description = "khrapatiy.dev")
         }
 )
 
