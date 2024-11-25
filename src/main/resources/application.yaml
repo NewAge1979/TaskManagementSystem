@@ -29,6 +29,6 @@ server:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
-    path: /tmsapis
+    path: /tms-api
   api-docs:
-    path: /tmsdocs
+    path: /tms-doc
